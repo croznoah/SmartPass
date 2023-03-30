@@ -163,14 +163,13 @@
             margin-top: -12px;
             color: #26215f;
         }
-        .pass-card {
+        #pass-card {
             width: calc(100% - 8px);
             height: fit-content;
             margin: 34px auto;
             max-width: 354px;
             border-radius: 15px;
             padding: 20px;
-            background-color: #5154dc;
         }
         .pass-nav {
             display: grid;
@@ -203,7 +202,7 @@
             padding: 27px 0px;
             text-align: center;
             color: white;
-            background-color: #8d7eee;
+            background-color: rgba(255, 255, 255, 0.3);
             font-weight: 700;
             font-size: 23px;
             margin: auto;
@@ -216,7 +215,7 @@
             z-index: 999;
         }
         #pass-progress {
-            background-color: #bcacf7;
+            background-color: rgba(255, 255, 255, 0.4);
             height: 100%;
             width: 100%;
             position: absolute;
@@ -249,7 +248,7 @@
             </div>
         </div>
         <div class="pass-title">Passes</div>
-        <div class="pass-card">
+        <div id="pass-card">
             <div class="pass-nav">
                 <i id="pass-icon" class="fa-solid fa-hands-bubbles"></i>
                 <div id="pass-destination">Bathroom</div>
@@ -324,6 +323,7 @@
                 document.getElementById("pass-teacher").innerText = teacher;
                 document.getElementById("pass-progress").style.width = "100%";
                 document.getElementById("pass-time").innerText = document.getElementById("timeinput").querySelector(".accentbtn").innerText + " - End Pass";
+                document.getElementById("pass-card").style.backgroundColor = backgroundcolors[destination];
                 countdown();
             }
         }
@@ -351,6 +351,13 @@
                     document.getElementById("pass-progress").style.width = ((time / totaltime) * 100)+ "%";
                 }
             }, 1000);
+        }
+        backgroundcolors = {
+            "Bathroom": "#5154dc",
+            "Water Fountain": "#5154dc",
+            "Dismissal": "black",
+            "Library": "#5154dc",
+            "Room Number": "#5154dc"
         }
         function resetclock() {
             clearTimeout(timer);
