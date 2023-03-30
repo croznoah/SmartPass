@@ -170,6 +170,8 @@
             max-width: 354px;
             border-radius: 15px;
             padding: 20px;
+            background: var(--passbg1);
+            background: linear-gradient(293deg, var(--passbg1) 0%, var(--passbg2) 100%);
         }
         .pass-nav {
             display: grid;
@@ -256,9 +258,9 @@
 
             <div class="pass-middle">
                 <div id="pass-teacher">Hoover</div>
-                <div style="font-size: 90px; position: relative; margin: -5px 0px;">
-                    <i class="fa-solid fa-angles-left"></i>
-                    <i class="fa-solid fa-angles-right"></i>
+                <div style="position: relative; margin: 7px auto; width: fit-content; display: flex; column-gap: 16px;">
+                    <img src="/assets/arrows.png" style="transform: scaleX(-1); height: 82px;">
+                    <img src="/assets/arrows.png" style="height: 82px;">
                 </div>
                 <div id="pass-destination2">Bathroom</div>
             </div>
@@ -274,15 +276,17 @@
         <div class="header">SmartPass Generator</div>
 
         <div class="label">Teacher's Last Name</div>
-        <input class="input" type="text" id="teacherinput" placeholder="Smith" value="TESTTTTT">
+        <input class="input" type="text" id="teacherinput" style="text-transform: capitalize;" placeholder="Luckman">
         <div class="label">Destination</div>
         <div class="options-wrapper" id="destinationinput">
             <button class="button accentbtn" onclick="toggle(this)">Bathroom</button>
             <button class="button" onclick="toggle(this)">Water Fountain</button>
             <button class="button" onclick="toggle(this)">Dismissal</button>
             <button class="button" onclick="toggle(this)">Library</button>
-            <button class="button" onclick="toggle(this)">Room Number</button>
+            <button class="button" onclick="toggle(this)">Other</button>
         </div>
+        <div class="label" id="roomlabel" style="display: none;">Room Number</div>
+        <input class="input" type="text" id="roominput" style="display: none; text-transform: uppercase;" placeholder="M252">
         <div class="label">Time</div>
         <div class="options-wrapper" id="timeinput">
             <button class="button accentbtn" onclick="toggle(this)">3:00</button>
@@ -302,6 +306,13 @@
         timer = 0;
         function toggle(option) {
             var wrapper = option.parentElement;
+            if (wrapper.id == "destinationinput" && option.innerText == "Other") {
+                document.getElementById("roomlabel").style.display = "block";
+                document.getElementById("roominput").style.display = "flex";
+            } else {
+                document.getElementById("roomlabel").style.display = "none";
+                document.getElementById("roominput").style.display = "none";
+            }
             wrapper.querySelectorAll(".button").forEach(button => {
                 button.classList.remove("accentbtn");
             });
@@ -309,12 +320,20 @@
         }
         function generatepass() {
             teacher = String(document.getElementById("teacherinput").value).trim().charAt(0).toUpperCase() + String(document.getElementById("teacherinput").value).trim().slice(1).toLowerCase();
+            destination = document.getElementById("destinationinput").querySelector(".accentbtn").innerText;
+            room =  document.getElementById("roominput").value.trim().toUpperCase();
             if (teacher == "") {
-                alert("You must input your teacher's last name");
+                alert("You must include your teacher's last name");
+            } else if (destination == "Other" && room == "") {   
+                alert("You must include a room number");
             } else {
-                destination = document.getElementById("destinationinput").querySelector(".accentbtn").innerText;
                 time = Number(document.getElementById("timeinput").querySelector(".accentbtn").innerText.substring(0, document.getElementById("timeinput").querySelector(".accentbtn").innerText.indexOf(":"))) * 60;
                 totaltime = time;
+                document.querySelector(":root").style.setProperty("--passbg1", backgroundcolors[destination][0]);
+                document.querySelector(":root").style.setProperty("--passbg2", backgroundcolors[destination][1]);
+                if (destination == "Other") {   
+                    destination = room;
+                }
                 document.body.style.backgroundColor = "white";
                 document.getElementById("form").style.display = "none";
                 document.getElementById("pass").style.display = "block";
@@ -323,7 +342,6 @@
                 document.getElementById("pass-teacher").innerText = teacher;
                 document.getElementById("pass-progress").style.width = "100%";
                 document.getElementById("pass-time").innerText = document.getElementById("timeinput").querySelector(".accentbtn").innerText + " - End Pass";
-                document.getElementById("pass-card").style.backgroundColor = backgroundcolors[destination];
                 countdown();
             }
         }
@@ -353,11 +371,11 @@
             }, 1000);
         }
         backgroundcolors = {
-            "Bathroom": "#5154dc",
-            "Water Fountain": "#5154dc",
-            "Dismissal": "black",
-            "Library": "#5154dc",
-            "Room Number": "#5154dc"
+            "Bathroom": ["#5154dc", "#2859EC"],
+            "Water Fountain": ["#04A1C0","#06B8C4"],
+            "Dismissal": ["#023370", "#125098"],
+            "Library": ["#03C492", "#0FD292"],
+            "Other": ["#C000DE", "#D903C5"]
         }
         function resetclock() {
             clearTimeout(timer);
